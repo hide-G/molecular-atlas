@@ -91,6 +91,108 @@ const ethanol = {
   ],
 };
 
+const atomsFromCoordinates = (symbols, coordinates) =>
+  symbols.map((element, index) => atom(element, ...coordinates[index]));
+const bondsFromIndices = (entries) => entries.map(([from, to, order = 1]) => bond(from, to, order));
+
+const lacticAcidCoordinates = [
+  [-1.391, -1.1177, 0.183], [1.4821, 1.041, 0.2494], [1.2275, -1.1171, -0.4061],
+  [-0.7091, 0.1081, 0.4023], [-1.3584, 1.1687, -0.4696], [0.7489, -0.0829, 0.0411],
+  [-0.7771, 0.3549, 1.4667], [-1.2762, 0.9076, -1.5309], [-0.8944, 2.1491, -0.3244],
+  [-2.427, 1.2531, -0.2446], [-2.2883, -1.0228, 0.5458], [2.4235, 0.9141, 0.0044],
+];
+const lacticAcidBonds = bondsFromIndices([
+  [0, 3], [0, 10], [1, 5], [1, 11], [2, 5, 2], [3, 4], [3, 5], [3, 6],
+  [4, 7], [4, 8], [4, 9],
+]);
+
+function createLacticAcid(stereo) {
+  const isR = stereo === 'R';
+  const atoms = atomsFromCoordinates(
+    ['O', 'O', 'O', 'C', 'C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+    lacticAcidCoordinates.map(([x, y, z]) => [isR ? x : -x, y, z]),
+  );
+  return {
+    id: `lactic-acid-${stereo.toLowerCase()}`,
+    name: `(${stereo})-乳酸`,
+    englishName: `(${stereo})-Lactic acid`,
+    formula: 'C₃H₆O₃',
+    category: `鏡像異性体・${stereo}体`,
+    description: '中心の炭素に–OH、–COOH、–CH₃、Hという4種類の基が結合した、キラルな分子です。',
+    fact: `結合の種類と順序は同じでも、(${isR ? 'S' : 'R'})体とは鏡像関係にあり、回転だけでは完全に重ね合わせられません。`,
+    stereo,
+    mirrorId: `lactic-acid-${isR ? 's' : 'r'}`,
+    sourceLabel: 'PubChem 3D conformer reference · CID 61503 / 107689',
+    sourceUrl: isR
+      ? 'https://pubchem.ncbi.nlm.nih.gov/compound/61503'
+      : 'https://pubchem.ncbi.nlm.nih.gov/compound/107689',
+    atoms,
+    bonds: lacticAcidBonds,
+  };
+}
+
+const betaDGlucose = {
+  id: 'beta-d-glucose',
+  name: 'β-D-グルコース',
+  englishName: 'β-D-Glucopyranose',
+  formula: 'C₆H₁₂O₆',
+  category: '糖・多官能基分子',
+  description: '6員環の骨格に多数のヒドロキシ基をもつ単糖で、生体の主要なエネルギー源となるグルコースの環状構造です。',
+  fact: '環状構造には5つの不斉炭素があり、置換基の立体的な向きが分子の性質を決めます。',
+  sourceLabel: 'PubChem 3D conformer · CID 64689',
+  sourceUrl: 'https://pubchem.ncbi.nlm.nih.gov/compound/64689',
+  atoms: atomsFromCoordinates(
+    ['O', 'O', 'O', 'O', 'O', 'O', 'C', 'C', 'C', 'C', 'C', 'C',
+      'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'],
+    [
+      [-0.6679, 1.1587, 0.257], [-0.887, -2.4483, -0.3388], [1.8623, -2.0693, 0.4696],
+      [2.8609, 0.5414, -0.4619], [1.1222, 2.6552, 0.2574], [-3.3742, 0.9717, -0.1865],
+      [-0.3727, -1.247, 0.23], [1.0856, -1.0709, -0.194], [-1.2211, -0.0621, -0.2375],
+      [1.6082, 0.3151, 0.1839], [0.6388, 1.4132, -0.2534], [-2.655, -0.1577, 0.274],
+      [-0.4248, -1.3522, 1.3206], [1.2066, -1.2487, -1.2697], [-1.2548, -0.0098, -1.3343],
+      [1.7952, 0.3598, 1.2636], [0.5967, 1.5141, -1.344], [-2.6916, -0.1535, 1.3685],
+      [-3.1564, -1.0581, -0.0922], [-0.8514, -2.3615, -1.3066], [1.4973, -2.9356, 0.22],
+      [2.7165, 0.4989, -1.4227], [1.4876, 2.5033, 1.1448], [-2.9192, 1.7652, 0.144],
+    ],
+  ),
+  bonds: bondsFromIndices([
+    [0, 8], [0, 10], [1, 6], [1, 19], [2, 7], [2, 20], [3, 9], [3, 21],
+    [4, 10], [4, 22], [5, 11], [5, 23], [6, 7], [6, 8], [6, 12], [7, 9],
+    [7, 13], [8, 11], [8, 14], [9, 10], [9, 15], [10, 16], [11, 17], [11, 18],
+  ]),
+};
+
+const caffeine = {
+  id: 'caffeine',
+  name: 'カフェイン',
+  englishName: 'Caffeine',
+  formula: 'C₈H₁₀N₄O₂',
+  category: '複素環式化合物',
+  description: '炭素・水素・窒素・酸素の24原子からなるアルカロイドで、縮合した2つの環と3つのメチル基をもちます。',
+  fact: 'アデノシン受容体への作用で知られます。環の主要部分はほぼ平面ですが、メチル基の水素は立体的に配置されます。',
+  sourceLabel: 'PubChem 3D conformer · CID 2519',
+  sourceUrl: 'https://pubchem.ncbi.nlm.nih.gov/compound/2519',
+  atoms: atomsFromCoordinates(
+    ['O', 'O', 'N', 'N', 'N', 'N', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C',
+      'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'],
+    [
+      [0.47, 2.5688, 0.0006], [-3.1271, -0.4436, -0.0003], [-0.9686, -1.3125, 0],
+      [2.2182, 0.1412, -0.0003], [-1.3477, 1.0797, -0.0001], [1.4119, -1.9372, 0.0002],
+      [0.8579, 0.2592, -0.0008], [0.3897, -1.0264, -0.0004], [0.0307, 1.422, -0.0006],
+      [-1.9061, -0.2495, -0.0004], [2.5032, -1.1998, 0.0003], [-1.4276, -2.696, 0.0008],
+      [3.1926, 1.2061, 0.0003], [-2.2969, 2.1881, 0.0007], [3.5163, -1.5787, 0.0008],
+      [-1.0451, -3.1973, -0.8937], [-2.5186, -2.7596, 0.0011], [-1.0447, -3.1963, 0.8957],
+      [4.1992, 0.7801, 0.0002], [3.0468, 1.8092, -0.8992], [3.0466, 1.8083, 0.9004],
+      [-1.8087, 3.1651, -0.0003], [-2.9322, 2.1027, 0.8881], [-2.9346, 2.1021, -0.8849],
+    ],
+  ),
+  bonds: bondsFromIndices([
+    [0, 8, 2], [1, 9, 2], [2, 7], [2, 9], [2, 11], [3, 6], [3, 10], [3, 12],
+    [4, 8], [4, 9], [4, 13], [5, 7], [5, 10, 2], [6, 7, 2], [6, 8], [10, 14],
+    [11, 15], [11, 16], [11, 17], [12, 18], [12, 19], [12, 20], [13, 21], [13, 22], [13, 23],
+  ]),
+};
+
 function createBenzene() {
   const atoms = [];
   const bonds = [];
@@ -195,6 +297,10 @@ export const molecules = [
   ammonia,
   methane,
   ethanol,
+  createLacticAcid('R'),
+  createLacticAcid('S'),
   createBenzene(),
+  betaDGlucose,
+  caffeine,
   createFullerene(),
 ];
