@@ -56,6 +56,7 @@ app.innerHTML = `
         </div>
         <div class="display-switch" role="group" aria-label="表示形式">
           <button type="button" data-mode="ball-stick" class="active">球棒モデル</button>
+          <button type="button" data-mode="education">教材モデル</button>
           <button type="button" data-mode="space-fill">空間充填</button>
         </div>
         <div class="drag-hint"><span>↔</span> ドラッグして回転</div>
@@ -64,10 +65,14 @@ app.innerHTML = `
       </section>
 
       <aside class="detail-panel" aria-live="polite">
-        <div class="molecule-index" id="molecule-index">01 / 07</div>
+        <div class="molecule-index" id="molecule-index">01 / ${String(molecules.length).padStart(2, '0')}</div>
         <p class="eyebrow" id="category"></p>
         <h2 id="molecule-name"></h2>
         <p class="english-name" id="english-name"></p>
+        <button id="enantiomer-switch" class="enantiomer-switch" type="button" hidden>
+          <span><small>ENANTIOMER PAIR</small><strong id="mirror-label"></strong></span>
+          <b>切り替える →</b>
+        </button>
         <div class="formula-card">
           <span>分子式</span>
           <strong id="formula"></strong>
@@ -85,6 +90,7 @@ app.innerHTML = `
           <p class="eyebrow">ELEMENTS</p>
           <div id="legend" class="legend"></div>
         </div>
+        <a id="structure-source" class="structure-source" target="_blank" rel="noreferrer" hidden></a>
         <label class="rotation-toggle">
           <span><strong>自動回転</strong><small>ゆっくり構造を眺める</small></span>
           <input id="auto-rotate" type="checkbox" checked />
@@ -135,7 +141,9 @@ let atomMeshes = [];
 let bondMeshes = [];
 let selectedMesh = null;
 let activeMolecule = null;
-let displayMode = localStorage.getItem('molecular-atlas-mode') || 'ball-stick';
+const supportedDisplayModes = ['ball-stick', 'education', 'space-fill'];
+const savedDisplayMode = localStorage.getItem('molecular-atlas-mode');
+let displayMode = supportedDisplayModes.includes(savedDisplayMode) ? savedDisplayMode : 'ball-stick';
 let autoRotate = true;
 let isPointerDown = false;
 
@@ -207,9 +215,10 @@ function buildMolecule(molecule) {
 
 function applyDisplayMode() {
   const isSpaceFill = displayMode === 'space-fill';
+  const isEducation = displayMode === 'education';
   atomMeshes.forEach((mesh) => {
     const element = elements[mesh.metadata.symbol];
-    const scale = isSpaceFill ? element.vdw / mesh.metadata.visualRadius : 1;
+    const scale = isSpaceFill ? element.vdw / mesh.metadata.visualRadius : isEducation ? 0.6 : 1;
     mesh.scaling.setAll(scale);
   });
   bondMeshes.forEach((mesh) => { mesh.setEnabled(!isSpaceFill); });
@@ -260,6 +269,19 @@ function updateDetails(molecule, index) {
   document.querySelector('#legend').innerHTML = symbols.map((symbol) => `
     <span><i style="--element-color: ${elements[symbol].color}"></i>${elements[symbol].name}<b>${symbol}</b></span>
   `).join('');
+
+  const mirrorSwitch = document.querySelector('#enantiomer-switch');
+  mirrorSwitch.hidden = !molecule.mirrorId;
+  mirrorSwitch.dataset.target = molecule.mirrorId || '';
+  if (molecule.mirrorId) {
+    const partnerStereo = molecule.stereo === 'R' ? 'S' : 'R';
+    document.querySelector('#mirror-label').textContent = `(${molecule.stereo})体 ↔ (${partnerStereo})体`;
+  }
+
+  const source = document.querySelector('#structure-source');
+  source.hidden = !molecule.sourceUrl;
+  source.href = molecule.sourceUrl || '#';
+  source.textContent = molecule.sourceLabel ? `構造座標: ${molecule.sourceLabel} ↗` : '';
 }
 
 function selectMolecule(id, skipLoading = false) {
@@ -327,6 +349,11 @@ document.querySelectorAll('[data-mode]').forEach((button) => {
     applyDisplayMode();
     resetCamera();
   });
+});
+
+document.querySelector('#enantiomer-switch').addEventListener('click', (event) => {
+  const target = event.currentTarget.dataset.target;
+  if (target) selectMolecule(target);
 });
 
 document.querySelector('#reset-view').addEventListener('click', () => resetCamera());

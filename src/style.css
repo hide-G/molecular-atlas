@@ -138,7 +138,7 @@ button { color: inherit; }
 .icon-button svg { width: 16px; height: 16px; fill: none; stroke: #8ca5ae; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
 .display-switch { position: absolute; z-index: 2; left: 50%; bottom: 24px; transform: translateX(-50%); padding: 3px; display: flex; border: 1px solid rgba(139, 185, 192, 0.14); background: rgba(6, 20, 31, 0.82); backdrop-filter: blur(8px); border-radius: 4px; }
-.display-switch button { border: 0; padding: 8px 17px; color: #738994; background: transparent; border-radius: 2px; font-size: 10px; cursor: pointer; }
+.display-switch button { border: 0; padding: 8px 13px; color: #738994; background: transparent; border-radius: 2px; font-size: 10px; cursor: pointer; white-space: nowrap; }
 .display-switch button.active { color: #d9fffb; background: rgba(83, 184, 177, 0.18); box-shadow: inset 0 0 0 1px rgba(112, 227, 216, 0.12); }
 .drag-hint { position: absolute; z-index: 2; left: 18px; bottom: 27px; color: #536b77; font: 400 9px 'DM Mono', monospace; letter-spacing: 0.08em; }
 .drag-hint span { display: inline-block; margin-right: 5px; color: #74929b; }
@@ -159,6 +159,13 @@ button { color: inherit; }
 .molecule-index { position: absolute; right: 27px; top: 38px; color: #435963; font: 400 9px 'DM Mono', monospace; letter-spacing: .08em; }
 .detail-panel h2 { margin: 2px 0 3px; font-size: 26px; font-weight: 600; letter-spacing: .025em; }
 .english-name { margin: 0 0 24px; color: #627984; font: 400 9px 'DM Mono', monospace; letter-spacing: .05em; }
+.enantiomer-switch { width: 100%; margin: -10px 0 18px; padding: 11px 13px; display: flex; align-items: center; justify-content: space-between; color: #a9bbbF; border: 1px solid rgba(112, 227, 216, .2); border-radius: 3px; background: rgba(73, 159, 156, .06); text-align: left; cursor: pointer; transition: 160ms ease; }
+.enantiomer-switch[hidden] { display: none; }
+.enantiomer-switch:hover { border-color: rgba(112, 227, 216, .45); background: rgba(73, 159, 156, .12); }
+.enantiomer-switch span { display: flex; flex-direction: column; gap: 3px; }
+.enantiomer-switch small { color: var(--teal); font: 500 7px 'DM Mono', monospace; letter-spacing: .12em; }
+.enantiomer-switch strong { font-size: 11px; font-weight: 500; }
+.enantiomer-switch b { color: #6f8b93; font-size: 8px; font-weight: 500; }
 .formula-card { height: 74px; margin-bottom: 20px; padding: 13px 17px; border: 1px solid var(--line); border-left: 2px solid var(--teal); background: linear-gradient(90deg, rgba(61, 174, 168, .08), transparent); display: flex; flex-direction: column; justify-content: center; }
 .formula-card span { color: #718792; font-size: 9px; margin-bottom: 3px; }
 .formula-card strong { color: #f2fbfb; font: 500 25px 'DM Mono', monospace; letter-spacing: .05em; }
@@ -177,6 +184,9 @@ button { color: inherit; }
 .legend span { display: inline-flex; align-items: center; color: #889ca5; font-size: 9px; }
 .legend i { width: 9px; height: 9px; margin-right: 6px; border-radius: 50%; background: var(--element-color); box-shadow: inset -2px -2px 3px rgba(0, 0, 0, .24); }
 .legend b { color: #4f6771; font: 400 8px 'DM Mono', monospace; margin-left: 4px; }
+.structure-source { display: block; margin-top: 13px; color: #58737d; font: 400 7px/1.5 'DM Mono', monospace; text-decoration: none; transition: color 160ms ease; }
+.structure-source:hover { color: var(--teal); }
+.structure-source[hidden] { display: none; }
 .rotation-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); cursor: pointer; }
 .rotation-toggle > span { display: flex; flex-direction: column; }
 .rotation-toggle strong { color: #adbdc2; font-size: 10px; font-weight: 500; }
